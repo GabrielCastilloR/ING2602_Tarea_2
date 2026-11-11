@@ -78,4 +78,4 @@ def deltaV(t, a, n=100, bc_type=None, showFuncs=False, hasPlot=False):
     
     print(f"El valor aproximado de deltaV con spline cubico({bc_type}) es : {dV:.4f} m/s")
 
-deltaV(np.array(t), np.array(a), bc_type='natural') # Para mostrar gráfico agregar el argumento hasPlot=True. Para mostrar el ajust agregar showFuncs=True
+deltaV(np.array(t), np.array(a), bc_type='natural') # Para mostrar gráfico agregar el argumento hasPlot=True. Para mostrar el ajuste agregar showFuncs=True
