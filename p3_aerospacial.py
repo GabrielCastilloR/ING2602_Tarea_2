@@ -11,6 +11,24 @@ from scipy.interpolate import CubicSpline
 t = [0,2,5,7,12,18,25]
 a = [0.0,4.2,14.8,19.1,11.3,3.5,0.2]
 
+def plot(spline, pMedios, datosCrudos, fname="p3_plot.png", hasSave=False):
+    x = np.linspace(0, 25, num=100)
+    plt.cla()
+    plt.xlabel("Tiempo (s)")
+    plt.ylabel("Aceleración de la Cápsula (m/s^2)")
+    plt.title("Datos Telemetricos Capsula de reentrada")
+
+    plt.fill_between(pMedios, spline(pMedios), color='gray', alpha=0.4, edgecolor='black', lw=1.0, label="Areas Trapezoidales del mallado")
+    plt.vlines(x=pMedios, ymin=0, ymax=spline(pMedios), color='black', ls=":", alpha=0.3, lw=0.8)
+    plt.scatter(datosCrudos[0], datosCrudos[1], marker='+', c='b', lw=1.2, label="Datos Telemetricos", zorder=5)
+    plt.plot(x, spline(x), c='green', lw=1, ls='-', label="Spline Cúbico Ajustado")
+
+    plt.legend(loc="upper right", fontsize="small")
+
+    if hasSave:
+        plt.savefig(fname, dpi=300, bbox_inches="tight")
+    plt.show()
+
 def printFuncs(spline):
     # 2. Extract attributes
     coef = spline.c  # Array of shape (4, number_of_intervals)
@@ -32,7 +50,7 @@ def printFuncs(spline):
         print(f"Intervalo [{x_i} <= x <= {x_next}]:")
         print(f"S_{i}(x) = {d:.4f}(x - {x_i})^3 + {c:.4f}(x - {x_i})^2 + {b:.4f}(x - {x_i}) + {a:.4f}\n")
     
-def deltaV(t,a, bc_type=None):
+def deltaV(t, a, n=100, bc_type=None, showFuncs=False, hasPlot=False):
     # Crear el spline usando scipy
     if not bc_type:
         spline = CubicSpline(t, a)
@@ -40,10 +58,10 @@ def deltaV(t,a, bc_type=None):
         spline = CubicSpline(t, a, bc_type=bc_type)
 
     # Imprimir el spline ajustado
-    printFuncs(spline)
+    if showFuncs:
+        printFuncs(spline)
 
     # Configuracion regla punto medio con malla uniforme
-    n = 100
     t0, tf = t[0], t[-1]
     h = (tf-t0)/n # Ancho del subintervalo uniforme
 
@@ -51,9 +69,13 @@ def deltaV(t,a, bc_type=None):
     m = t0 + (i + 0.5) * h # Puntos medios
 
     # Calculo delta v
-    return h * np.sum(spline(m))
+    dV = h * np.sum(spline(m))
 
-v = deltaV(np.array(t), np.array(a))
-vNat = deltaV(np.array(t), np.array(a), bc_type="natural")
-print(f"El valor aproximado de deltaV con comportamiento 'not-a-knot' es : {v:.4f} m/s")
-print(f"El valor aproximado de deltaV con comportamiento 'natural' es : {vNat:.4f} m/s")
+    if hasPlot:
+        datosCrudos = [t, a]
+        plot(spline, m, datosCrudos, fname="p3_plot.png")
+    
+    return dV
+
+vNat = deltaV(np.array(t), np.array(a), bc_type="natural", hasPlot=True)
+print(f"El valor aproximado de deltaV con spline cubico natural es : {vNat:.4f} m/s")
