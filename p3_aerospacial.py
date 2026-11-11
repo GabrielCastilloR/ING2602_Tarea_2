@@ -18,8 +18,8 @@ def plot(spline, pMedios, datosCrudos, fname="p3_plot.png", hasSave=False):
     plt.ylabel("Aceleración de la Cápsula (m/s^2)")
     plt.title("Datos Telemetricos Capsula de reentrada")
 
-    plt.fill_between(pMedios, spline(pMedios), color='gray', alpha=0.4, edgecolor='black', lw=1.0, label="Areas Trapezoidales del mallado")
-    plt.vlines(x=pMedios, ymin=0, ymax=spline(pMedios), color='black', ls=":", alpha=0.3, lw=0.8)
+    plt.fill_between(datosCrudos[0], datosCrudos[1], color='gray', alpha=0.3, edgecolor='black', lw=1.0, label="Aproximaciones trapezoidales")
+    plt.vlines(x=datosCrudos[0], ymin=0, ymax=datosCrudos[1], color='black', ls=":", alpha=0.3, lw=0.8)
     plt.scatter(datosCrudos[0], datosCrudos[1], marker='+', c='b', lw=1.2, label="Datos Telemetricos", zorder=5)
     plt.plot(x, spline(x), c='green', lw=1, ls='-', label="Spline Cúbico Ajustado")
 
@@ -73,7 +73,7 @@ def deltaV(t, a, n=100, bc_type=None, showFuncs=False, hasPlot=False):
 
     if hasPlot:
         datosCrudos = [t, a]
-        plot(spline, m, datosCrudos, fname="p3_plot.png")
+        plot(spline, m, datosCrudos, fname="p3_plot.png", hasSave=True)
     
     return dV
 
