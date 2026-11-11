@@ -47,7 +47,7 @@ def printFuncs(spline):
         x_i = nodos[i]          # Starting point of the interval
         x_next = nodos[i+1]     # Ending point of the interval
         
-        print(f"Intervalo [{x_i} <= x <= {x_next}]:")
+        print(f"Intervalo [{x_i} <= x < {x_next}]:")
         print(f"S_{i}(x) = {d:.4f}(x - {x_i})^3 + {c:.4f}(x - {x_i})^2 + {b:.4f}(x - {x_i}) + {a:.4f}\n")
     
 def deltaV(t, a, n=100, bc_type=None, showFuncs=False, hasPlot=False):
@@ -77,5 +77,5 @@ def deltaV(t, a, n=100, bc_type=None, showFuncs=False, hasPlot=False):
     
     return dV
 
-vNat = deltaV(np.array(t), np.array(a), bc_type="natural", hasPlot=True)
+vNat = deltaV(np.array(t), np.array(a), bc_type="natural", showFuncs=True)
 print(f"El valor aproximado de deltaV con spline cubico natural es : {vNat:.4f} m/s")
