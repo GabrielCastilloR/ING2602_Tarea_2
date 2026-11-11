@@ -53,6 +53,7 @@ def printFuncs(spline):
 def deltaV(t, a, n=100, bc_type=None, showFuncs=False, hasPlot=False):
     # Crear el spline usando scipy
     if not bc_type:
+        bc_type = 'not-a-knot' # Para el print al final de la función
         spline = CubicSpline(t, a)
     else:
         spline = CubicSpline(t, a, bc_type=bc_type)
@@ -75,7 +76,6 @@ def deltaV(t, a, n=100, bc_type=None, showFuncs=False, hasPlot=False):
         datosCrudos = [t, a]
         plot(spline, m, datosCrudos, fname="p3_plot.png", hasSave=True)
     
-    return dV
+    print(f"El valor aproximado de deltaV con spline cubico({bc_type}) es : {dV:.4f} m/s")
 
-vNat = deltaV(np.array(t), np.array(a), bc_type="natural", showFuncs=True)
-print(f"El valor aproximado de deltaV con spline cubico natural es : {vNat:.4f} m/s")
+deltaV(np.array(t), np.array(a), bc_type='natural') # Para mostrar gráfico agregar el argumento hasPlot=True. Para mostrar el ajust agregar showFuncs=True
